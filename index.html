@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Prumo: sites, dados e agendas no prumo. Sites, painéis de dados e apps de agendamento para barbearias, salões e pequenos negócios.">
+<title>Prumo Sites e Agendas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: página única, mobile-first (o público vem do Instagram). Hero com demonstração funcional da agenda, depois serviços, exemplos, processo e contato por WhatsApp. */
+:root{
+  --bg:#F7F4EE; --surface:#FFFFFF; --soft:#EFEADF; --fg:#0B1F3A; --muted:#3A4756; --line:#DAD3C6;
+  --accent:#2457A6; --on-accent:#FFFFFF;
+  --gold:#FFC72C; --on-gold:#0B1F3A;
+  --ink:#0B1F3A; --mist:#F7F4EE;
+  --f-display:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --f-body:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1F3A; --surface:#12294A; --soft:#0F2544; --fg:#F7F4EE; --muted:#C3CCD8; --line:#27436D;
+    --accent:#8DB4F2; --on-accent:#0B1F3A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1F3A; --surface:#12294A; --soft:#0F2544; --fg:#F7F4EE; --muted:#C3CCD8; --line:#27436D;
+  --accent:#8DB4F2; --on-accent:#0B1F3A; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.55;margin:0;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:var(--f-display);font-weight:800;letter-spacing:-0.03em;line-height:1.04;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:1120px;margin-inline:auto;padding-inline:20px}
+.eyebrow{font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border-radius:999px;font-weight:700;font-size:17px;text-decoration:none;border:2px solid transparent;cursor:pointer;font-family:var(--f-body);transition:transform .15s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn-gold{background:var(--gold);color:var(--on-gold)}
+.btn-ghost{border-color:var(--fg);color:var(--fg);background:transparent}
+.btn-ink{background:var(--ink);color:var(--mist)}
+.btn.sm{min-height:44px;padding:0 20px;font-size:15px}
+
+/* Topo */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand svg{width:40px;height:40px;display:block}
+.word{font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:-.04em}
+.t-tile{fill:var(--fg)} .t-p{fill:var(--bg)} .t-ring{stroke:var(--bg);fill:none} .t-drop{fill:var(--gold)}
+
+/* Hero */
+.hero{padding-block:clamp(40px,7vw,88px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center}
+.hero h1{font-size:clamp(42px,8.4vw,84px)}
+.mark{background:var(--gold);color:var(--on-gold);padding:0 .14em;border-radius:.14em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lead{font-size:clamp(18px,2.4vw,22px);color:var(--muted);max-width:34em;margin-top:24px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+
+/* Demonstração (celular) */
+.demo{display:flex;flex-direction:column;align-items:center;gap:14px}
+.phone{width:100%;max-width:340px;border:10px solid var(--fg);border-radius:42px;background:var(--surface);padding:22px 18px 18px}
+.phone h2{font-size:24px;letter-spacing:-.02em;line-height:1.1}
+.lbl{font-weight:700;font-size:12px;letter-spacing:.16em;color:var(--muted);margin:16px 0 8px;text-transform:uppercase}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.times{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.svcs{display:grid;gap:8px}
+.chip{font-family:var(--f-body);color:var(--fg);background:var(--surface);border:2px solid var(--line);border-radius:12px;min-height:48px;cursor:pointer;font-size:16px;font-weight:700;padding:0 6px}
+.chip small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--accent)}
+.day{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62px;padding:4px 0}
+.day[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.day[aria-pressed="true"] small{color:var(--bg)}
+.time[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.svc{display:flex;justify-content:space-between;align-items:center;padding:0 14px;text-align:left}
+.svc span:last-child{font-size:14px;font-weight:500;color:var(--muted)}
+.sum{text-align:center;color:var(--muted);font-size:15px;margin:16px 0 10px}
+.confirm{width:100%;min-height:56px;border:none;border-radius:14px;background:var(--accent);color:var(--on-accent);font-family:var(--f-body);font-size:18px;font-weight:700;cursor:pointer}
+.note{font-size:13.5px;color:var(--muted);text-align:center;max-width:300px}
+
+/* Seções */
+section{padding-block:clamp(48px,8vw,96px)}
+.head{display:grid;gap:12px;margin-bottom:36px;max-width:40em}
+.head h2{font-size:clamp(32px,5.4vw,52px)}
+.head p{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h3{font-size:26px}
+.card p{color:var(--muted)}
+.ico{width:48px;height:48px;border-radius:14px;background:var(--gold);display:grid;place-items:center}
+.ico svg{width:26px;height:26px;stroke:var(--on-gold);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.alt{background:var(--soft)}
+
+/* Exemplos */
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.ex-vis{padding:18px;background:var(--soft);min-height:250px;display:flex;flex-direction:column;justify-content:center}
+.ex-txt{padding:20px 22px 24px;display:grid;gap:6px}
+.ex-txt h3{font-size:24px}
+.ex-txt p{color:var(--muted);font-size:16px}
+.tag{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.browser{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.browser .tb{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.browser .tb i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.browser .bd{padding:20px 16px 22px;display:grid;gap:10px}
+.browser b{font-family:var(--f-display);font-size:24px;letter-spacing:-.02em;line-height:1.1}
+.browser span.s{color:var(--muted);font-size:14.5px}
+.mini-btn{justify-self:start;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:14px;padding:9px 16px;border-radius:999px}
+.bars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:end;height:170px;padding-top:6px}
+.bar-col{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
+.bar-col i{display:block;width:100%;background:var(--accent);border-radius:8px 8px 3px 3px}
+.bar-col.hi i{background:var(--gold)}
+.bar-col em{font-style:normal;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.days-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;text-align:center;font-size:13px;color:var(--muted);margin-top:6px}
+.cap{font-size:13px;color:var(--muted);margin-bottom:8px}
+.agenda{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px}
+.row b{font-variant-numeric:tabular-nums}
+.st{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;border:1.5px solid var(--accent);color:var(--accent)}
+.st.p{border-color:var(--gold);background:var(--gold);color:var(--on-gold)}
+.nota{margin-top:20px;color:var(--muted);font-size:15px}
+
+/* Exemplos interativos */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tab{font-family:var(--f-body);font-size:14px;font-weight:700;border:none;background:transparent;color:var(--muted);padding:0 12px;min-height:40px;border-radius:8px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg)}
+.browser .bd{min-height:168px;align-content:start}
+button.mini-btn{border:none;font-family:var(--f-body);cursor:pointer;min-height:44px;padding:0 18px}
+button.row{width:100%;text-align:left;font-family:var(--f-body);color:var(--fg);cursor:pointer;min-height:48px}
+button.row:hover{border-color:var(--accent)}
+.mini-row{grid-template-columns:1fr auto}
+.mini-row .s{color:var(--muted);font-size:14px}
+.times.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.msg{font-size:14.5px;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pill{font-family:var(--f-body);font-weight:700;font-size:14px;min-height:44px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.pill[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+button.bar-col{background:none;border:none;padding:0;font-family:var(--f-body);color:var(--fg);cursor:pointer;min-width:0}
+.bar-col[aria-pressed="true"] i{background:var(--gold)}
+.readout{margin-top:10px;font-size:15px;font-weight:700;min-height:24px}
+
+/* Processo */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:s}
+.step{border-top:3px solid var(--fg);padding-top:18px;display:grid;gap:8px;align-content:start}
+.step h3{font-size:24px}
+.step p{color:var(--muted)}
+.step .n{font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.1em;color:var(--muted)}
+
+/* Contato */
+.band{background:var(--gold);color:var(--on-gold);border-radius:28px;padding:clamp(32px,6vw,64px);display:grid;gap:20px;justify-items:start}
+.band h2{font-size:clamp(36px,7vw,68px);color:var(--on-gold)}
+.band p{font-size:19px;max-width:30em}
+.band a.ig{font-weight:700}
+footer{padding-block:36px 48px;color:var(--muted);font-size:15px}
+.foot{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:24px}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:40px}
+  .cards,.steps{grid-template-columns:minmax(0,1fr)}
+  .ex-vis{min-height:0}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#topo" aria-label="Prumo, início">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect class="t-tile" width="64" height="64" rx="16"/>
+        <rect class="t-p" x="20" y="11" width="7" height="32" rx="3.5"/>
+        <circle class="t-ring" cx="35" cy="25" r="11" stroke-width="7"/>
+        <path class="t-drop" d="M17.5 49C17.5 45.5 20 44.5 23.5 44.5C27 44.5 29.5 45.5 29.5 49C29.5 53 26 57 23.5 60C21 57 17.5 53 17.5 49Z"/>
+      </svg>
+      <span class="word">prumo</span>
+    </a>
+    <a class="btn btn-gold sm" data-wa href="#contato">Pedir orçamento</a>
+  </div>
+</header>
+
+<main id="topo">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Sites · Dados · Agendas</p>
+        <h1 style="margin-top:16px">Sites, dados e agendas <span class="mark">no prumo.</span></h1>
+        <p class="lead">Criamos sites, painéis de dados e apps de agendamento para barbearias, salões e pequenos negócios.</p>
+        <div class="cta-row">
+          <a class="btn btn-gold" data-wa href="#contato">Pedir orçamento</a>
+          <a class="btn btn-ghost" href="#exemplos">Ver exemplos</a>
+        </div>
+      </div>
+      <div class="demo">
+        <div class="phone" role="group" aria-label="Demonstração de agenda online">
+          <h2>Agende seu horário</h2>
+          <p class="lbl">Serviço</p>
+          <div class="svcs" id="svcs"></div>
+          <p class="lbl">Dia</p>
+          <div class="days" id="days"></div>
+          <p class="lbl">Horário</p>
+          <div class="times" id="times"></div>
+          <p class="sum" id="sum" aria-live="polite"></p>
+          <button class="confirm" id="confirm" type="button">Confirmar horário</button>
+        </div>
+        <p class="note">Demonstração. Experimente: nenhum horário é reservado de verdade.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="alt" id="servicos">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">O que fazemos</p>
+        <h2>Três coisas, bem feitas</h2>
+        <p>Para quem atende cliente todo dia e precisa de menos bagunça e mais resultado.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/></svg></div>
+          <h3>Sites</h3>
+          <p>Páginas rápidas e claras, feitas para abrir bem no celular. Ótimas para o link do Instagram, com botão de WhatsApp e seus serviços à vista.</p>
+        </article>
+        <article class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></div>
+          <h3>Dados</h3>
+          <p>Planilhas e painéis que juntam vendas, estoque e atendimentos em um só lugar, para você ver o que está dando resultado.</p>
+        </article>
+        <article class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></div>
+          <h3>Agendas</h3>
+          <p>App de agendamento para barbearia e salão. O cliente escolhe serviço, dia e horário. Você vê a agenda do dia sem trocar mensagens.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="exemplos">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Exemplos</p>
+        <h2>O tipo de trabalho que entregamos</h2>
+        <p>Demonstrações ilustrativas, com nomes e números fictícios. Toque nos itens para testar.</p>
+      </div>
+      <div class="cards">
+        <article class="ex">
+          <div class="ex-vis">
+            <div class="browser" role="group" aria-label="Exemplo de site de barbearia">
+              <div class="tabs" role="tablist" id="stabs"></div>
+              <div class="bd" id="sbody" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="ex-txt"><span class="tag">Exemplo ilustrativo</span><h3>Site</h3><p>Página com serviços, horários e botão de WhatsApp. Navegue pelas abas e escolha um horário.</p></div>
+        </article>
+        <article class="ex">
+          <div class="ex-vis">
+            <div class="seg" id="seg" role="group" aria-label="Escolher indicador"></div>
+            <div class="bars" id="bars" role="group" aria-label="Gráfico de barras por dia da semana, dados fictícios"></div>
+            <div class="days-x" id="barsx" aria-hidden="true"></div>
+            <p class="readout" id="readout" aria-live="polite"></p>
+          </div>
+          <div class="ex-txt"><span class="tag">Exemplo ilustrativo</span><h3>Dados</h3><p>Painel que mostra em quais dias o movimento é maior. Toque nas barras e troque o indicador.</p></div>
+        </article>
+        <article class="ex">
+          <div class="ex-vis">
+            <p class="cap" id="acap" aria-live="polite"></p>
+            <div class="agenda" id="agenda"></div>
+          </div>
+          <div class="ex-txt"><span class="tag">Exemplo ilustrativo</span><h3>Agenda</h3><p>Visão do dia com o status de cada horário. Toque em um horário para confirmar ou voltar a pendente.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="como">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Como funciona</p>
+        <h2>Do primeiro contato à entrega</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="n">PASSO 1</span><h3>Conversa</h3><p>Você conta o que precisa pelo WhatsApp. A gente tira as dúvidas e entende o seu negócio.</p></div>
+        <div class="step"><span class="n">PASSO 2</span><h3>Proposta</h3><p>Você recebe valor e prazo combinados antes de começar. Sem surpresa no meio do caminho.</p></div>
+        <div class="step"><span class="n">PASSO 3</span><h3>Entrega</h3><p>Você recebe tudo pronto e a gente ajusta o que for preciso para ficar do seu jeito.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contato">
+    <div class="wrap">
+      <div class="band">
+        <h2>Seu negócio no prumo.</h2>
+        <p>Site, painel de dados ou agenda online. Conte o que você precisa e receba uma proposta.</p>
+        <a class="btn btn-ink" data-wa href="#contato">Chamar no WhatsApp</a>
+        <p style="font-size:16px">Ou fale pelo Instagram: <a class="ig" data-ig href="#contato">@prumo.digita</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>Prumo · Sites, dados e agendas no prumo.</span>
+      <a data-ig href="#contato">Instagram</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===== Edite aqui ===== */
+var WHATSAPP = "5585987083063"; /* número com país e DDD, só dígitos */
+var INSTAGRAM = "prumo.digita";
+var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
+/* ======================= */
+
+(function(){
+  document.querySelectorAll('[data-wa]').forEach(function(a){
+    if(WHATSAPP){
+      a.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(MENSAGEM);
+      a.target = '_blank'; a.rel = 'noopener';
+    }
+  });
+  document.querySelectorAll('[data-ig]').forEach(function(a){
+    a.href = 'https://instagram.com/' + INSTAGRAM;
+    a.target = '_blank'; a.rel = 'noopener';
+  });
+
+  /* Demonstração de agenda */
+  var services = [['Corte','45 min'],['Barba','30 min'],['Corte + barba','1 h 15']];
+  var times = ['09:00','10:30','13:00','14:30','16:00','17:30'];
+  var days = [];
+  var d = new Date();
+  while(days.length < 5){
+    if(d.getDay() !== 0){
+      days.push({
+        dow: d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','').replace(/^./,function(c){return c.toUpperCase();}),
+        num: String(d.getDate()),
+        long: d.toLocaleDateString('pt-BR',{weekday:'long'})
+      });
+    }
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+  }
+  var st = {svc:0, day:0, time:2, done:false};
+
+  function el(tag, cls, html){ var e = document.createElement(tag); if(cls) e.className = cls; if(html) e.innerHTML = html; return e; }
+
+  function render(){
+    var svcs = document.getElementById('svcs'); svcs.innerHTML = '';
+    services.forEach(function(s,i){
+      var b = el('button','chip svc','<span>'+s[0]+'</span><span>'+s[1]+'</span>');
+      b.type = 'button'; b.setAttribute('aria-pressed', String(st.svc===i));
+      b.onclick = function(){ st.svc=i; st.done=false; render(); };
+      svcs.appendChild(b);
+    });
+    var dEl = document.getElementById('days'); dEl.innerHTML = '';
+    days.forEach(function(x,i){
+      var b = el('button','chip day','<small>'+x.dow+'</small><span>'+x.num+'</span>');
+      b.type = 'button'; b.setAttribute('aria-pressed', String(st.day===i));
+      b.setAttribute('aria-label', x.long + ', dia ' + x.num);
+      b.onclick = function(){ st.day=i; st.done=false; render(); };
+      dEl.appendChild(b);
+    });
+    var tEl = document.getElementById('times'); tEl.innerHTML = '';
+    times.forEach(function(t,i){
+      var b = el('button','chip time',t);
+      b.type = 'button'; b.setAttribute('aria-pressed', String(st.time===i));
+      b.onclick = function(){ st.time=i; st.done=false; render(); };
+      tEl.appendChild(b);
+    });
+    document.getElementById('sum').textContent =
+      services[st.svc][0] + ' · ' + days[st.day].dow + ' ' + days[st.day].num + ' às ' + times[st.time];
+    document.getElementById('confirm').textContent = st.done ? 'Horário confirmado ✓' : 'Confirmar horário';
+  }
+  document.getElementById('confirm').onclick = function(){ st.done = !st.done; render(); };
+  render();
+
+  /* Exemplo 1: mini site com abas */
+  var tabs = [['inicio','Início'],['servicos','Serviços'],['horarios','Horários']];
+  var siteTimes = ['09:00','10:30','13:00','14:30'];
+  var site = {tab:'inicio', svc:0, time:-1};
+  function renderSite(){
+    var t = document.getElementById('stabs'); t.innerHTML = '';
+    tabs.forEach(function(x){
+      var b = el('button','tab',x[1]); b.type = 'button'; b.setAttribute('role','tab');
+      b.setAttribute('aria-selected', String(site.tab===x[0]));
+      b.onclick = function(){ site.tab = x[0]; renderSite(); };
+      t.appendChild(b);
+    });
+    var body = document.getElementById('sbody'); body.innerHTML = '';
+    if(site.tab === 'inicio'){
+      body.appendChild(el('b','','Barbearia Exemplo'));
+      body.appendChild(el('span','s','Corte, barba e atendimento com hora marcada.'));
+      var go = el('button','mini-btn','Agendar horário'); go.type = 'button';
+      go.onclick = function(){ site.tab = 'horarios'; renderSite(); };
+      body.appendChild(go);
+    } else if(site.tab === 'servicos'){
+      services.forEach(function(s,i){
+        var r = el('button','row mini-row','<span>'+s[0]+'</span><span class="s">'+s[1]+'</span>');
+        r.type = 'button';
+        r.onclick = function(){ site.svc = i; site.time = -1; site.tab = 'horarios'; renderSite(); };
+        body.appendChild(r);
+      });
+    } else {
+      body.appendChild(el('span','msg','Serviço: ' + services[site.svc][0]));
+      var grid = el('div','times two');
+      siteTimes.forEach(function(h,i){
+        var c = el('button','chip time',h); c.type = 'button';
+        c.setAttribute('aria-pressed', String(site.time===i));
+        c.onclick = function(){ site.time = i; renderSite(); };
+        grid.appendChild(c);
+      });
+      body.appendChild(grid);
+      body.appendChild(el('span','msg', site.time < 0 ? 'Escolha um horário.' : 'Horário escolhido: ' + siteTimes[site.time] + ' (exemplo, nada é reservado).'));
+    }
+  }
+  renderSite();
+
+  /* Exemplo 2: gráfico interativo (dados fictícios) */
+  var series = {
+    a:{label:'Atendimentos', unit:'atendimentos', vals:[8,11,9,13,16,19]},
+    b:{label:'Novos clientes', unit:'novos clientes', vals:[2,3,2,4,5,7]}
+  };
+  var dShort = ['Seg','Ter','Qua','Qui','Sex','Sáb'];
+  var dLong = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var dat = {key:'a', i:5};
+  function renderData(){
+    var s = series[dat.key], max = Math.max.apply(null, s.vals);
+    var seg = document.getElementById('seg'); seg.innerHTML = '';
+    Object.keys(series).forEach(function(k){
+      var p = el('button','pill',series[k].label); p.type = 'button';
+      p.setAttribute('aria-pressed', String(dat.key===k));
+      p.onclick = function(){ dat.key = k; renderData(); };
+      seg.appendChild(p);
+    });
+    var bars = document.getElementById('bars'); bars.innerHTML = '';
+    var bx = document.getElementById('barsx'); bx.innerHTML = '';
+    s.vals.forEach(function(v,i){
+      var c = el('button','bar-col'); c.type = 'button';
+      c.setAttribute('aria-pressed', String(dat.i===i));
+      c.setAttribute('aria-label', dLong[i] + ': ' + v + ' ' + s.unit);
+      c.appendChild(el('em','',String(v)));
+      var bar = el('i'); bar.style.height = Math.round(v/max*130) + 'px'; c.appendChild(bar);
+      c.onclick = function(){ dat.i = i; renderData(); };
+      bars.appendChild(c);
+      bx.appendChild(el('span','',dShort[i]));
+    });
+    document.getElementById('readout').textContent =
+      dLong[dat.i] + ': ' + s.vals[dat.i] + ' ' + s.unit + ' (dados fictícios)';
+  }
+  renderData();
+
+  /* Exemplo 3: agenda do dia */
+  var ag = [['09:00','Corte',true],['10:30','Barba',true],['11:30','Corte + barba',false]];
+  function renderAgenda(){
+    var box = document.getElementById('agenda'); box.innerHTML = '';
+    var n = 0;
+    ag.forEach(function(a){
+      if(a[2]) n++;
+      var r = el('button','row','<b>'+a[0]+'</b><span>'+a[1]+'</span><span class="st'+(a[2]?'':' p')+'">'+(a[2]?'Confirmado':'Pendente')+'</span>');
+      r.type = 'button';
+      r.setAttribute('aria-label', a[0] + ', ' + a[1] + ', ' + (a[2]?'confirmado':'pendente') + '. Toque para alterar.');
+      r.onclick = function(){ a[2] = !a[2]; renderAgenda(); };
+      box.appendChild(r);
+    });
+    document.getElementById('acap').textContent = 'Agenda de hoje (exemplo): ' + n + ' de ' + ag.length + ' confirmados';
+  }
+  renderAgenda();
+})();
+</script>
+</body>
+</html>
