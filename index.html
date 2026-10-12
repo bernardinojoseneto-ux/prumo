@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Prumo Sites e Agendas</title>
-<meta name="description" content="Prumo: sites, painéis de dados e agenda online para barbearias, salões e pequenos negócios.">
+<meta name="description" content="Prumo: sites, painéis de dados e agenda online para pequenos negócios e profissionais autônomos.">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:wght@400;500;700&display=swap">
 <style>
@@ -234,6 +234,14 @@ button{font-family:var(--f-body)}
 .act .row{display:grid;gap:8px}
 .lnk{background:none;border:none;color:var(--accent);font-weight:700;font-size:15px;min-height:44px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 4px}
 
+/* Seletor de negócio */
+.pick{padding-bottom:clamp(28px,5vw,56px)}
+.pick-box{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.pick-box h2{font-size:clamp(22px,3vw,30px)}
+.nseg{display:flex;flex-wrap:wrap;gap:8px}
+.nseg button{min-height:48px;padding:0 20px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--fg);font-weight:700;font-size:15.5px;cursor:pointer}
+.nseg button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
 /* Contato */
 .band{background:var(--gold);color:var(--on-gold);border-radius:32px;padding:clamp(32px,6vw,72px);display:grid;gap:20px;justify-items:start}
 .band h2{font-size:clamp(38px,7vw,72px);color:var(--on-gold)}
@@ -284,7 +292,7 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:15px}
   <div class="wrap hero">
     <div class="hero-grid">
       <div>
-        <p class="eyebrow">Para barbearias, salões e pequenos negócios</p>
+        <p class="eyebrow">Para pequenos negócios e profissionais autônomos</p>
         <h1 style="margin-top:16px">Sites, dados e agendas <span class="mark">no prumo.</span></h1>
         <p class="lead">Um site que atrai, uma agenda que organiza o dia e um painel que mostra o que fazer na semana. Tudo conectado.</p>
         <div class="cta-row">
@@ -296,26 +304,38 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:15px}
         <div class="frame hv-site">
           <div class="fbar"><i></i><i></i><i></i><span>seunegocio.com.br</span></div>
           <div class="mock">
-            <div class="mock-nav"><b>Barbearia Exemplo</b><span class="btn btn-gold sm" style="min-height:36px;padding:0 14px;font-size:13.5px">Agendar</span></div>
+            <div class="mock-nav"><b id="hv-name">Barbearia Exemplo</b><span class="btn btn-gold sm" style="min-height:36px;padding:0 14px;font-size:13.5px">Agendar</span></div>
             <div class="mock-hero">
-              <h3>Corte e barba com hora marcada.</h3>
-              <p>Escolha o serviço, o barbeiro e o horário.</p>
-              <div class="mock-btns"><span class="btn btn-ink sm" style="font-size:14px">Agendar horário</span></div>
+              <h3 id="hv-h3">Corte e barba com hora marcada.</h3>
+              <p id="hv-p">Escolha o serviço, o barbeiro e o horário.</p>
+              <div class="mock-btns"><span class="btn btn-ink sm" id="hv-btn" style="font-size:14px">Agendar horário</span></div>
             </div>
           </div>
         </div>
         <div class="hv-book">
           <div class="ok-line"><span class="ok-dot"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>Agendamento confirmado</div>
-          <small>Corte · amanhã às 10:00 · com Rafa</small>
+          <small id="hv-conf">Corte · amanhã às 10:00 · com Rafa</small>
         </div>
         <div class="hv-kpi">
-          <span>Agendamentos na semana</span>
+          <span id="hv-kl">Agendamentos na semana</span>
           <b>74</b>
           <em>▲ 9% vs. semana anterior</em>
         </div>
       </div>
     </div>
   </div>
+
+  <section class="pick" aria-labelledby="pick-h">
+    <div class="wrap">
+      <div class="pick-box">
+        <div>
+          <h2 id="pick-h">Veja como fica no seu tipo de negócio</h2>
+          <p class="hint" style="margin-top:6px">Escolha um e o site, a agenda e o painel abaixo mudam para o seu caso. Funciona para qualquer área; estes são só exemplos.</p>
+        </div>
+        <div class="nseg" id="nich-seg" role="group" aria-label="Tipo de negócio"></div>
+      </div>
+    </div>
+  </section>
 
   <!-- 01 SITE -->
   <section class="sec alt" id="site">
@@ -339,23 +359,19 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:15px}
             <button type="button" id="dev-ph" aria-pressed="false">Celular</button>
           </div>
           <div class="frame" id="siteframe">
-            <div class="fbar"><i></i><i></i><i></i><span>barbeariaexemplo.com.br</span></div>
+            <div class="fbar"><i></i><i></i><i></i><span id="m-url">barbeariaexemplo.com.br</span></div>
             <div class="mock">
-              <div class="mock-nav"><b>Barbearia Exemplo</b><a class="btn btn-gold sm" href="#agenda" style="min-height:40px;padding:0 16px">Agendar</a></div>
+              <div class="mock-nav"><b id="m-name">Barbearia Exemplo</b><a class="btn btn-gold sm" href="#agenda" style="min-height:40px;padding:0 16px">Agendar</a></div>
               <div class="mock-hero">
-                <h3>Corte e barba com hora marcada.</h3>
-                <p>Atendimento sem fila. Escolha o serviço, o barbeiro e o horário que couber na sua rotina.</p>
+                <h3 id="m-h3">Corte e barba com hora marcada.</h3>
+                <p id="m-p">Atendimento sem fila. Escolha o serviço, o barbeiro e o horário que couber na sua rotina.</p>
                 <div class="mock-btns">
-                  <a class="btn btn-ink sm" href="#agenda">Agendar horário</a>
+                  <a class="btn btn-ink sm" id="m-btn" href="#agenda">Agendar horário</a>
                   <a class="btn btn-ghost sm" data-wa href="#contato">WhatsApp</a>
                 </div>
               </div>
-              <div class="mock-svcs">
-                <div class="mock-svc"><b>Corte</b><span>45 min · R$ 45</span></div>
-                <div class="mock-svc"><b>Barba</b><span>30 min · R$ 35</span></div>
-                <div class="mock-svc"><b>Corte + barba</b><span>1 h 15 · R$ 70</span></div>
-              </div>
-              <div class="mock-foot">Rua Exemplo, 123 · Seg a Sáb, 9h às 19h</div>
+              <div class="mock-svcs" id="m-svcs"></div>
+              <div class="mock-foot" id="m-foot">Rua Exemplo, 123 · Seg a Sáb, 9h às 19h</div>
             </div>
           </div>
           <p class="hint" style="margin-top:12px">Exemplo ilustrativo. Os botões levam à agenda logo abaixo.</p>
@@ -397,7 +413,7 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:15px}
       </div>
       <div class="dash">
         <div class="dash-top">
-          <div><h3>Barbearia Exemplo · Painel</h3><p>Dados fictícios de exemplo</p></div>
+          <div><h3 id="d-title">Barbearia Exemplo · Painel</h3><p>Dados fictícios de exemplo</p></div>
           <div class="seg" role="group" aria-label="Período" id="per-seg"></div>
         </div>
         <div class="kpis" id="kpis"></div>
@@ -421,6 +437,7 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:15px}
         </div>
         <div class="acts" id="acts"></div>
       </div>
+      <p class="hint" style="margin-top:18px">O painel não é só de agenda: ele também organiza vendas, estoque, fluxo de caixa e alunos, a partir das planilhas que você já usa.</p>
     </div>
   </section>
 
@@ -473,7 +490,7 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
   }
   function clear(id){ var e = document.getElementById(id); e.innerHTML = ''; return e; }
   function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
-  function money(v){ return 'R$ ' + v.toLocaleString('pt-BR'); }
+  function money(v){ return v === 0 ? 'Grátis' : 'R$ ' + v.toLocaleString('pt-BR'); }
   var CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
   var BACK = '<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>';
   function svgEl(html){ var s = document.createElement('span'); s.innerHTML = html; return s.firstChild; }
@@ -500,25 +517,65 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
   bpc.onclick = function(){ setDev(false); };
   bph.onclick = function(){ setDev(true); };
 
+  /* ---------- tipos de negócio (exemplos) ---------- */
+  var HEAT_DEF = {
+    days:['Seg','Ter','Qua','Qui','Sex','Sáb'],
+    longs:['segunda','terça','quarta','quinta','sexta','sábado'],
+    bands:['Manhã','Almoço','Tarde','Noite'],
+    v:[[45,30,52,40],[38,28,48,35],[42,25,50,45],[55,35,62,58],[68,48,80,86],[92,78,95,70]]
+  };
+  var HEAT_REST = {
+    days:HEAT_DEF.days, longs:HEAT_DEF.longs,
+    bands:['Café','Almoço','Tarde','Jantar'],
+    v:[[20,48,22,40],[18,45,20,38],[22,50,25,45],[25,55,30,58],[30,70,38,88],[40,90,45,96]]
+  };
+  var PHRASE = {'Manhã':'de manhã','Almoço':'no almoço','Tarde':'à tarde','Noite':'à noite','Café':'no café da manhã','Jantar':'no jantar'};
+  var BANDS_STD = [{g:'Manhã', t:['09:00','10:00','11:00']},{g:'Tarde', t:['13:30','14:30','15:30','16:30']},{g:'Noite', t:['18:00','19:00']}];
+  var NICHES = {
+    barbearia:{label:'Barbearia e salão', name:'Barbearia Exemplo', url:'barbeariaexemplo.com.br',
+      heroH:'Corte e barba com hora marcada.', heroS:'Escolha o serviço, o barbeiro e o horário.',
+      heroP:'Atendimento sem fila. Escolha o serviço, o barbeiro e o horário que couber na sua rotina.',
+      btn:'Agendar horário', addr:'Rua Exemplo, 123 · Seg a Sáb, 9h às 19h',
+      svc:[{n:'Corte',d:'45 min',p:45},{n:'Barba',d:'30 min',p:35},{n:'Corte + barba',d:'1 h 15',p:70},{n:'Sobrancelha',d:'15 min',p:15}],
+      any:'Qualquer profissional', pros:[{n:'Rafa',s:'Barbeiro'},{n:'Leo',s:'Barbeiro'}], who:'Com quem?', step2:'Profissional', withL:'Com', ownLabel:'profissional',
+      q1:'O que você quer fazer?', unit:'Agendamentos', newL:'Clientes novos', noun:'clientes', bands:BANDS_STD, heat:HEAT_DEF,
+      low:function(d){ return 'Enviar uma oferta de ' + d + ' para os clientes pelo WhatsApp.'; }, lowImp:'Preenche horários vazios.',
+      peakTodo:'Abrir 2 horários extras nesse período.', peakImp:'Atende mais gente no dia de maior procura.'},
+    clinica:{label:'Clínica', name:'Clínica Exemplo', url:'clinicaexemplo.com.br',
+      heroH:'Consulta marcada em poucos toques.', heroS:'Escolha o atendimento, o profissional e o horário.',
+      heroP:'Escolha o tipo de atendimento, o profissional e o horário. Receba o lembrete no WhatsApp.',
+      btn:'Marcar consulta', addr:'Av. Exemplo, 789 · Seg a Sex, 8h às 18h',
+      svc:[{n:'Consulta',d:'40 min',p:180},{n:'Retorno',d:'20 min',p:90},{n:'Avaliação',d:'1 h',p:220},{n:'Teleconsulta',d:'30 min',p:140}],
+      any:'Qualquer profissional', pros:[{n:'Dra. Ana',s:'Profissional da clínica'},{n:'Dr. Caio',s:'Profissional da clínica'}], who:'Com quem?', step2:'Profissional', withL:'Com', ownLabel:'profissional',
+      q1:'Qual atendimento você precisa?', unit:'Consultas', newL:'Pacientes novos', noun:'pacientes',
+      bands:[{g:'Manhã', t:['08:30','09:30','10:30']},{g:'Tarde', t:['13:30','14:30','15:30','16:30']},{g:'Noite', t:['18:00','19:00']}], heat:HEAT_DEF,
+      low:function(d){ return 'Avisar a lista de espera pelo WhatsApp sobre horários de ' + d + '.'; }, lowImp:'Reduz horários vazios.',
+      peakTodo:'Abrir 2 encaixes extras nesse período.', peakImp:'Atende mais gente no dia de maior procura.'},
+    personal:{label:'Personal e estúdio', name:'Estúdio Exemplo', url:'estudioexemplo.com.br',
+      heroH:'Treino com horário garantido.', heroS:'Escolha a aula, o profissional e o horário.',
+      heroP:'Escolha a aula, o profissional e o horário. Sem trocar mensagem para marcar.',
+      btn:'Marcar aula', addr:'Rua Exemplo, 456 · Seg a Sex, 6h às 21h',
+      svc:[{n:'Aula experimental',d:'45 min',p:0},{n:'Treino personal',d:'1 h',p:120},{n:'Avaliação física',d:'40 min',p:90},{n:'Aula em dupla',d:'1 h',p:160}],
+      any:'Qualquer profissional', pros:[{n:'Camila',s:'Personal'},{n:'Bruno',s:'Personal'}], who:'Com quem?', step2:'Profissional', withL:'Com', ownLabel:'profissional',
+      q1:'Qual aula você quer?', unit:'Aulas', newL:'Alunos novos', noun:'alunos',
+      bands:[{g:'Manhã', t:['06:00','07:00','08:00']},{g:'Tarde', t:['14:00','15:00','16:00','17:00']},{g:'Noite', t:['18:30','19:30']}], heat:HEAT_DEF,
+      low:function(d){ return 'Oferecer uma aula experimental de ' + d + ' para quem ainda não treina com você.'; }, lowImp:'Preenche horários vazios e traz alunos novos.',
+      peakTodo:'Abrir uma turma extra nesse período.', peakImp:'Atende mais gente no dia de maior procura.'},
+    restaurante:{label:'Restaurante', name:'Restaurante Exemplo', url:'restauranteexemplo.com.br',
+      heroH:'Sua mesa reservada, sem espera.', heroS:'Escolha a mesa, o ambiente e o horário.',
+      heroP:'Escolha o tamanho da mesa, o ambiente e o horário. Receba a confirmação no WhatsApp.',
+      btn:'Reservar mesa', addr:'Rua Exemplo, 321 · Ter a Dom, 11h30 às 23h',
+      svc:[{n:'Mesa para 2',d:'1 h 30',p:0},{n:'Mesa para 4',d:'1 h 30',p:0},{n:'Mesa para 6',d:'2 h',p:0},{n:'Salão para grupo',d:'3 h',p:200}],
+      any:'Qualquer ambiente', pros:[{n:'Salão',s:'Ambiente interno'},{n:'Varanda',s:'Ambiente aberto'}], who:'Onde você prefere sentar?', step2:'Ambiente', withL:'Em', ownLabel:'ambiente',
+      q1:'Que tipo de mesa?', unit:'Reservas', newL:'Clientes novos', noun:'clientes',
+      bands:[{g:'Almoço', t:['11:30','12:30','13:30']},{g:'Jantar', t:['18:30','19:30','20:30','21:30']}], heat:HEAT_REST,
+      low:function(d){ return 'Criar uma promoção de ' + d + ' e divulgar no Instagram e no WhatsApp.'; }, lowImp:'Enche mesas em dia fraco.',
+      peakTodo:'Abrir uma segunda turma de mesas nesse período.', peakImp:'Atende mais gente no horário de maior procura.'}
+  };
+  var NICHE_ORDER = ['barbearia','clinica','personal','restaurante'];
+  var SERV, PROS, BANDS, SLOTS = [], NICHE, HEAT;
+
   /* ---------- 02 agenda ---------- */
-  var SERV = [
-    {n:'Corte', d:'45 min', p:45},
-    {n:'Barba', d:'30 min', p:35},
-    {n:'Corte + barba', d:'1 h 15', p:70},
-    {n:'Sobrancelha', d:'15 min', p:15}
-  ];
-  var PROS = [
-    {n:'Qualquer profissional', s:'Primeiro horário livre'},
-    {n:'Rafa', s:'Barbeiro'},
-    {n:'Leo', s:'Barbeiro'}
-  ];
-  var BANDS = [
-    {g:'Manhã', t:['09:00','10:00','11:00']},
-    {g:'Tarde', t:['13:30','14:30','15:30','16:30']},
-    {g:'Noite', t:['18:00','19:00']}
-  ];
-  var SLOTS = [];
-  BANDS.forEach(function(b){ b.t.forEach(function(t){ SLOTS.push({t:t, g:b.g}); }); });
   var NAMES = ['Marcos','Diego','Paulo','Renan','Caio','Davi','Tiago','Bruno','Leandro'];
 
   var BD = [];
@@ -563,14 +620,14 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
 
   function renderBk(){
     var root = clear('bk');
-    var titles = ['Serviço','Profissional','Horário','Seus dados'];
+    var titles = ['Serviço',NICHE.step2,'Horário','Seus dados'];
     var top = h('div',{class:'bk-top'});
     if(B.step > 1 && B.step < 5){
       top.appendChild(h('button',{class:'back',type:'button','aria-label':'Voltar',onclick:function(){ B.step--; renderAll(); }}));
       top.firstChild.innerHTML = BACK;
     }
     top.appendChild(h('div',{class:'t'},[
-      h('b',{text:'Barbearia Exemplo'}),
+      h('b',{text:NICHE.name}),
       h('small',{text: B.step < 5 ? 'Passo ' + B.step + ' de 4 · ' + titles[B.step-1] : 'Agendamento feito'})
     ]));
     var prog = h('div',{class:'prog','aria-hidden':'true'});
@@ -581,7 +638,7 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
     var foot = h('div',{class:'bk-foot'});
 
     if(B.step === 1){
-      body.appendChild(h('h4',{text:'O que você quer fazer?'}));
+      body.appendChild(h('h4',{text:NICHE.q1}));
       var list = h('div',{class:'opts'});
       SERV.forEach(function(s,i){
         list.appendChild(h('button',{class:'opt',type:'button','aria-pressed':String(B.svc===i),onclick:function(){ B.svc=i; renderAll(); }},[
@@ -593,7 +650,7 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
       foot.appendChild(h('button',{class:'btn btn-acc wide',type:'button',text:'Continuar',onclick:function(){ B.step=2; renderAll(); }}));
     }
     if(B.step === 2){
-      body.appendChild(h('h4',{text:'Com quem?'}));
+      body.appendChild(h('h4',{text:NICHE.who}));
       var lp = h('div',{class:'opts'});
       PROS.forEach(function(p,i){
         lp.appendChild(h('button',{class:'opt',type:'button','aria-pressed':String(B.pro===i),onclick:function(){
@@ -649,7 +706,7 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
       body.appendChild(h('div',{class:'sum'},[
         h('div',{},[h('span',{text:'Serviço'}),h('b',{text:SERV[B.svc].n})]),
         h('div',{},[h('span',{text:'Quando'}),h('b',{text:whenText()})]),
-        h('div',{},[h('span',{text:'Com'}),h('b',{text:proName()})]),
+        h('div',{},[h('span',{text:NICHE.withL}),h('b',{text:proName()})]),
         h('div',{},[h('span',{text:'Valor'}),h('b',{text:money(SERV[B.svc].p)})])
       ]));
       body.appendChild(h('p',{class:'hint',text:'Seu horário está reservado por alguns minutos enquanto você preenche.'}));
@@ -672,12 +729,12 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
       done.appendChild(h('p',{text:(B.name.split(' ')[0] || 'Cliente') + ', te esperamos ' + whenText() + '.'}));
       done.appendChild(h('div',{class:'sum',style:'width:100%'},[
         h('div',{},[h('span',{text:'Serviço'}),h('b',{text:SERV[B.svc].n})]),
-        h('div',{},[h('span',{text:'Com'}),h('b',{text:PROS[B.assigned].n})]),
+        h('div',{},[h('span',{text:NICHE.withL}),h('b',{text:PROS[B.assigned].n})]),
         h('div',{},[h('span',{text:'Valor'}),h('b',{text:money(SERV[B.svc].p)})])
       ]));
       done.appendChild(h('div',{class:'bubble',style:'width:100%'},[
         h('small',{text:'LEMBRETE NO WHATSAPP (EXEMPLO)'}),
-        'Oi, ' + (B.name.split(' ')[0] || 'tudo bem') + '! Seu horário é ' + whenText() + ', com ' + PROS[B.assigned].n + '. Para remarcar ou cancelar, é só responder aqui.'
+        'Oi, ' + (B.name.split(' ')[0] || 'tudo bem') + '! Seu horário é ' + whenText() + ', ' + NICHE.withL.toLowerCase() + ' ' + PROS[B.assigned].n + '. Para remarcar ou cancelar, é só responder aqui.'
       ]));
       body.appendChild(done);
       foot.appendChild(h('button',{class:'btn btn-ghost wide',type:'button',text:'Fazer outro agendamento',onclick:function(){
@@ -728,7 +785,6 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
     document.getElementById('own-sum').textContent = busyN + ' de ' + SLOTS.length + ' horários ocupados com ' + PROS[ownPro].n + '.';
   }
   function renderAll(){ renderBk(); renderOwner(); }
-  renderAll();
 
   /* ---------- 03 painel ---------- */
   var PER = {
@@ -751,12 +807,6 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
     {k:'comp', l:'Comparecimento', f:function(v){ return v + '%'; }, pts:true},
     {k:'novos', l:'Clientes novos', f:function(v){ return String(v); }}
   ];
-  var HEAT = {
-    days:['Seg','Ter','Qua','Qui','Sex','Sáb'],
-    longs:['segunda','terça','quarta','quinta','sexta','sábado'],
-    bands:['Manhã','Almoço','Tarde','Noite'],
-    v:[[45,30,52,40],[38,28,48,35],[42,25,50,45],[55,35,62,58],[68,48,80,86],[92,78,95,70]]
-  };
   var D = {per:'d7', sel:-1, hl:'', on:[false,false,false], heatSel:null};
 
   function pct(v,p){ return Math.round((v-p)/p*100); }
@@ -781,14 +831,14 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
   }
   function renderChart(){
     var P = PER[D.per], chart = clear('chart');
-    document.getElementById('ch-title').textContent = P.title;
+    document.getElementById('ch-title').textContent = NICHE.unit + ' por ' + (D.per === 'd7' ? 'dia' : 'semana');
     document.getElementById('ch-sub').textContent = P.sub;
     var max = Math.max.apply(null, P.cur.concat(P.prev));
     var H = 172;
     var sel = D.sel < 0 ? P.cur.length - 1 : D.sel;
     P.cur.forEach(function(v,i){
       var bh = Math.round(v/max*H), ph = Math.round(P.prev[i]/max*H);
-      var col = h('button',{class:'cc',type:'button','aria-pressed':String(sel===i),'aria-label':P.longs[i] + ': ' + v + ' agendamentos, anterior ' + P.prev[i],onclick:function(){ D.sel=i; renderChart(); }});
+      var col = h('button',{class:'cc',type:'button','aria-pressed':String(sel===i),'aria-label':P.longs[i] + ': ' + v + ' ' + NICHE.unit.toLowerCase() + ', anterior ' + P.prev[i],onclick:function(){ D.sel=i; renderChart(); }});
       var bar = h('i',{class:'cb'}); bar.style.height = bh + 'px';
       var val = h('span',{class:'cv',text:String(v)}); val.style.bottom = (26 + bh + 4) + 'px';
       var pm = h('span',{class:'cp'}); pm.style.bottom = (26 + ph) + 'px';
@@ -798,18 +848,18 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
     });
     var c = P.cur[sel], p = P.prev[sel], d = pct(c,p);
     document.getElementById('ch-read').textContent =
-      P.longs[sel] + ': ' + c + ' agendamentos, contra ' + p + ' no período anterior (' + (d >= 0 ? '+' : '') + d + '%).';
+      P.longs[sel] + ': ' + c + ' ' + NICHE.unit.toLowerCase() + ', contra ' + p + ' no período anterior (' + (d >= 0 ? '+' : '') + d + '%).';
   }
   function heatAvgDay(i){ var a = HEAT.v[i]; return a.reduce(function(s,x){ return s+x; },0)/a.length; }
   function renderHeat(){
-    var box = clear('heat');
+    var box = clear('heat'), pk = peakCell();
     box.appendChild(h('span'));
     HEAT.days.forEach(function(d){ box.appendChild(h('span',{class:'hh',text:d})); });
     HEAT.bands.forEach(function(b,bi){
       box.appendChild(h('span',{class:'hr',text:b}));
       HEAT.days.forEach(function(d,di){
         var v = HEAT.v[di][bi];
-        var hl = (D.hl === 'low' && di === lowDay()) || (D.hl === 'peak' && di === 5 && bi === 2);
+        var hl = (D.hl === 'low' && di === lowDay()) || (D.hl === 'peak' && di === pk[0] && bi === pk[1]);
         var btn = h('button',{class:'hc' + (hl ? ' hl' : ''),type:'button','aria-label':HEAT.longs[di] + ', ' + b + ': ' + v + '% de ocupação',text:v + '%',onclick:function(){ D.heatSel = [di,bi]; renderHeatRead(); }});
         btn.style.background = 'var(--surface)';
         btn.style.background = 'color-mix(in srgb, var(--gold) ' + Math.round(v*0.95) + '%, var(--surface))';
@@ -825,23 +875,30 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
     var di = D.heatSel[0], bi = D.heatSel[1], v = HEAT.v[di][bi];
     r.textContent = cap(HEAT.longs[di]) + ', ' + HEAT.bands[bi].toLowerCase() + ': ' + v + '% dos horários ocupados.';
   }
+  function peakCell(){
+    var b = [0,0]; HEAT.v.forEach(function(r,di){ r.forEach(function(v,bi){ if(v > HEAT.v[b[0]][b[1]]) b = [di,bi]; }); }); return b;
+  }
+  function peakDay(){
+    var hi = 0; for(var i=1;i<6;i++){ if(heatAvgDay(i) > heatAvgDay(hi)) hi = i; } return hi;
+  }
   function lowDay(){
     var lo = 0; for(var i=1;i<6;i++){ if(heatAvgDay(i) < heatAvgDay(lo)) lo = i; } return lo;
   }
   function renderActs(){
     var P = PER[D.per], box = clear('acts');
-    var lo = lowDay(), loAvg = Math.round(heatAvgDay(lo)), satAvg = Math.round(heatAvgDay(5));
+    var lo = lowDay(), loAvg = Math.round(heatAvgDay(lo)), hiD = peakDay(), hiAvg = Math.round(heatAvgDay(hiD));
+    var pk = peakCell(), pkV = HEAT.v[pk[0]][pk[1]];
     var miss = 100 - P.k.comp.v;
     var A = [
       {tag:'Oportunidade', key:'low', title: cap(HEAT.longs[lo]) + ' é o dia mais vazio',
-        text:'A ocupação média é de ' + loAvg + '%, contra ' + satAvg + '% no sábado.',
-        todo:'Enviar uma oferta de ' + HEAT.longs[lo] + ' para os clientes pelo WhatsApp.',
-        imp:'Preenche horários vazios.', btn:['Programar envio','Envio programado ✓'], map:true},
-      {tag:'Atenção', key:'peak', title:'Sábado à tarde está quase lotado',
-        text:'95% dos horários estão ocupados nesse período.',
-        todo:'Abrir 2 horários extras no sábado à tarde.',
-        imp:'Atende mais gente no dia de maior procura.', btn:['Abrir horários','Horários abertos ✓'], map:true},
-      {tag:'Atenção', key:'miss', title:miss + '% dos clientes não compareceram',
+        text:'A ocupação média é de ' + loAvg + '%, contra ' + hiAvg + '% ' + (HEAT.longs[hiD] === 'sábado' || HEAT.longs[hiD] === 'domingo' ? 'no ' : 'na ') + HEAT.longs[hiD] + '.',
+        todo:NICHE.low(HEAT.longs[lo]),
+        imp:NICHE.lowImp, btn:['Programar envio','Envio programado ✓'], map:true},
+      {tag:'Atenção', key:'peak', title: cap(HEAT.longs[pk[0]]) + ' ' + PHRASE[HEAT.bands[pk[1]]] + ' está quase lotado',
+        text: pkV + '% dos horários estão ocupados nesse período.',
+        todo:NICHE.peakTodo,
+        imp:NICHE.peakImp, btn:['Abrir horários','Horários abertos ✓'], map:true},
+      {tag:'Atenção', key:'miss', title:miss + '% dos ' + NICHE.noun + ' não compareceram',
         text:'Cada falta é um horário que ficou vazio.',
         todo:'Ativar o lembrete por WhatsApp 24 horas antes.',
         imp:'Reduz faltas.', btn:['Ativar lembrete','Lembrete ativo ✓'], map:false}
@@ -871,7 +928,35 @@ var MENSAGEM = "Olá! Vi o site da Prumo e quero pedir um orçamento.";
     });
   }
   function renderDash(){ renderPer(); renderKpis(); renderChart(); renderHeat(); renderActs(); }
-  renderDash();
+
+  /* ---------- trocar o tipo de negócio ---------- */
+  function setText(id, t){ document.getElementById(id).textContent = t; }
+  function applyNiche(id){
+    NICHE = NICHES[id];
+    SERV = NICHE.svc;
+    PROS = [{n:NICHE.any, s:'Primeiro horário livre'}].concat(NICHE.pros);
+    BANDS = NICHE.bands; HEAT = NICHE.heat;
+    SLOTS = []; BANDS.forEach(function(b){ b.t.forEach(function(t){ SLOTS.push({t:t, g:b.g}); }); });
+    KP[0].l = NICHE.unit; KP[3].l = NICHE.newL;
+    B = {step:1, svc:0, pro:0, day:0, slot:-1, name:'', phone:'', err:{}, assigned:0};
+    mine.length = 0; ownPro = 1;
+    D.sel = -1; D.hl = ''; D.on = [false,false,false]; D.heatSel = null;
+    /* textos do site de exemplo */
+    setText('hv-name', NICHE.name); setText('hv-h3', NICHE.heroH); setText('hv-p', NICHE.heroS); setText('hv-btn', NICHE.btn);
+    setText('hv-conf', SERV[0].n + ' · amanhã às ' + BANDS[0].t[Math.min(1, BANDS[0].t.length - 1)] + ' · ' + NICHE.withL.toLowerCase() + ' ' + NICHE.pros[0].n);
+    setText('hv-kl', NICHE.unit + ' na semana');
+    setText('m-url', NICHE.url); setText('m-name', NICHE.name); setText('m-h3', NICHE.heroH); setText('m-p', NICHE.heroP);
+    setText('m-btn', NICHE.btn); setText('m-foot', NICHE.addr); setText('d-title', NICHE.name + ' · Painel');
+    var sv = clear('m-svcs');
+    SERV.slice(0,3).forEach(function(x){ sv.appendChild(h('div',{class:'mock-svc'},[h('b',{text:x.n}),h('span',{text:x.d + ' · ' + money(x.p)})])); });
+    document.getElementById('own-seg').setAttribute('aria-label', 'Escolher ' + NICHE.ownLabel);
+    var seg = clear('nich-seg');
+    NICHE_ORDER.forEach(function(k){
+      seg.appendChild(h('button',{type:'button','aria-pressed':String(k === id),text:NICHES[k].label,onclick:function(){ if(k !== id) applyNiche(k); }}));
+    });
+    renderAll(); renderDash();
+  }
+  applyNiche('barbearia');
 })();
 </script>
 
