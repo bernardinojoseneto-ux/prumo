@@ -269,6 +269,34 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   }
   function save() { try { localStorage.setItem(STORE, JSON.stringify(state.bookings)); } catch (e) {} }
 
+  /* o horário já terminou? */
+  function isFinished(bk) {
+    var s = svc(bk.service), p = String(bk.date).split("-");
+    if (!s || p.length !== 3) return false;
+    var m = 9 * 60 + (bk.start + nSlots(s)) * 30;
+    return new Date(+p[0], +p[1] - 1, +p[2], Math.floor(m / 60), m % 60) <= new Date();
+  }
+  /* tira da lista o que já passou */
+  function cleanup() {
+    var before = state.bookings.length;
+    state.bookings = state.bookings.filter(function (b) { return !isFinished(b); });
+    if (state.bookings.length !== before) save();
+  }
+  /* confere com a agenda se as marcações ainda existem (se o barbeiro apagou, some da lista) */
+  function syncBookings() {
+    if (!CONNECTED) return;
+    var list = state.bookings.filter(function (b) { return b.code; });
+    if (!list.length) return;
+    api("POST", { action: "status", items: list.map(function (b) { return { phone: b.phone, code: b.code }; }) }).then(function (res) {
+      if (!res || !res.ok || !res.found || res.found.length !== list.length) return;
+      var gone = {};
+      list.forEach(function (b, i) { if (!res.found[i]) gone[b.id] = true; });
+      var before = state.bookings.length;
+      state.bookings = state.bookings.filter(function (b) { return !gone[b.id]; });
+      if (state.bookings.length !== before) { save(); renderMine(); }
+    }).catch(function () { /* sem conexão: mantém a lista como está */ });
+  }
+
   /* quem ocupa o slot i: null, {kind:"seed"|"you", ...} */
   function occupant(dateKey, barberId, i) {
     if (CONNECTED) {
@@ -416,7 +444,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
       $("tab-" + k).setAttribute("aria-selected", k === v ? "true" : "false");
     });
     $("bar").hidden = v !== "book";
-    if (v === "mine") renderMine();
+    if (v === "mine") { cleanup(); renderMine(); syncBookings(); }
     if (v === "shop") renderAgenda();
   }
 
@@ -538,6 +566,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   });
 
   load();
+  cleanup();
   state.date = keyOf(DAYS[0]);
   if (CONNECTED) {
     $("demo-badge").hidden = true;
@@ -546,6 +575,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   }
   renderServices(); renderBarbers(); renderDays(); renderSlots(); renderBar();
   fetchBusy();
+  syncBookings();
 })();
 </script>
 </body>
