@@ -3,23 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b1a2e">
-<title>Agenda Barbearia Prumo</title>
+<meta name="theme-color" content="#101214">
+<title>Rodrigues Barbearia</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap">
 <style>
+/* Paleta tirada da logo: fundo grafite, rosa-areia das letras, vermelho e azul do poste. */
 /* Layout: one phone-width column (max 560px) with top tabs; booking flow stacked in sections, sticky confirm bar at bottom. Single dark navy + gold look, no light variant by choice. */
 :root {
   color-scheme: dark;
-  --bg: #0b1a2e;
-  --surface: #12263f;
-  --surface-2: #17304e;
-  --line: #264765;
-  --fg: #eef2f7;
-  --muted: #a3b5c9;
-  --gold: #d4a84b;
-  --gold-ink: #1b1405;
+  --bg: #101214;
+  --surface: #181b1f;
+  --surface-2: #20242a;
+  --line: #353a41;
+  --fg: #f6eee8;
+  --muted: #b5aaa2;
+  --gold: #eac5b2;
+  --gold-ink: #2b1612;
   --ok: #4cc38a;
-  --danger: #ef7b7b;
+  --danger: #e4574d;
   --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
   --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -39,7 +40,10 @@ body {
 .wrap { max-width: 560px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
 .wrap > * { min-width: 0; }
 header { display: flex; align-items: center; gap: 12px; }
-.mark { width: 44px; height: 44px; flex: none; }
+.pole { height: 5px; border-radius: 3px; background: repeating-linear-gradient(135deg, #c8352f 0 10px, #f6eee8 10px 20px, #2f5fa8 20px 30px); opacity: .9; }
+.mark { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--gold); background: var(--surface); color: var(--gold); font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; overflow: hidden; }
+.mark.logo { width: auto; max-width: 140px; height: 48px; border: 0; background: none; border-radius: 8px; }
+.mark.logo img { height: 100%; width: auto; max-width: 100%; display: block; }
 .brand h1 { font-family: var(--font-display); font-weight: 700; font-size: 28px; letter-spacing: .04em; text-transform: uppercase; margin: 0; line-height: 1; }
 .brand p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
 .demo { margin-left: auto; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold); border-radius: 4px; padding: 3px 7px; white-space: nowrap; }
@@ -66,7 +70,7 @@ section { min-width: 0; }
 .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; margin-top: 10px; }
 .slot { background: var(--surface); border: 1px solid var(--line); color: var(--fg); border-radius: 8px; padding: 10px 0; font: 600 15px var(--font-body); font-variant-numeric: tabular-nums; cursor: pointer; }
 .slot[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); }
-.slot:disabled { color: #5d7590; background: transparent; border-style: dashed; text-decoration: line-through; cursor: not-allowed; }
+.slot:disabled { color: #6d645e; background: transparent; border-style: dashed; text-decoration: line-through; cursor: not-allowed; }
 .hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
 .fields { display: grid; gap: 10px; }
 label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
@@ -79,7 +83,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
 .cta { background: var(--gold); color: var(--gold-ink); border: 0; border-radius: 10px; font: 700 16px var(--font-body); padding: 13px 20px; cursor: pointer; white-space: nowrap; }
 .cta:disabled { opacity: .45; cursor: not-allowed; }
 .ghost { background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 8px; font: 500 13px var(--font-body); padding: 7px 10px; cursor: pointer; }
-.ghost.danger { color: var(--danger); border-color: #6b3a45; }
+.ghost.danger { color: var(--danger); border-color: #6e3a38; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: center; }
 .card .when { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--gold); line-height: 1.05; min-width: 64px; font-variant-numeric: tabular-nums; }
 .card .grow { flex: 1; min-width: 0; }
@@ -96,10 +100,9 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
 .pill { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border-radius: 99px; padding: 3px 9px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
 .pill.on { color: var(--ok); border-color: #2c6b52; }
 .pill.you { color: var(--gold); border-color: var(--gold); }
-.pitch { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-.pitch p { margin: 0; }
-.copy { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.copy code { font: 700 16px var(--font-body); color: var(--gold); user-select: all; }
+.credit { text-align: center; font-size: 12px; color: var(--muted); padding-top: 8px; }
+.credit strong { color: var(--fg); font-weight: 500; }
+.credit a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
 @media (prefers-reduced-motion: no-preference) { .opt, .slot, .day { transition: background .15s, border-color .15s; } }
 [hidden]{display:none!important}
 </style>
@@ -107,17 +110,14 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
 <body>
 <div class="wrap">
   <header>
-    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
-      <circle cx="22" cy="22" r="21" fill="#12263f" stroke="#d4a84b" stroke-width="1.5"/>
-      <path d="M16 10h9a6 6 0 0 1 0 12h-4v6" fill="none" stroke="#d4a84b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M21 30l-3.4 5.2a3.8 3.8 0 1 0 6.8 0z" fill="#d4a84b"/>
-    </svg>
+    <div class="mark" id="mark" aria-hidden="true"></div>
     <div class="brand">
-      <h1>Barbearia Modelo</h1>
-      <p>Agende seu horário em 1 minuto</p>
+      <h1 id="shop-name">Barbearia</h1>
+      <p id="tagline"></p>
     </div>
     <span class="demo" id="demo-badge">Demonstração</span>
   </header>
+  <div class="pole" aria-hidden="true"></div>
 
   <nav role="tablist" aria-label="Seções do app">
     <button role="tab" id="tab-book" aria-selected="true" data-view="book">Agendar</button>
@@ -131,7 +131,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
       <h2>Serviço</h2>
       <div class="list" id="services"></div>
     </section>
-    <section>
+    <section id="sec-barbers">
       <h2>Profissional</h2>
       <div class="list" id="barbers"></div>
     </section>
@@ -197,16 +197,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
     </section>
   </div>
 
-  <section class="pitch">
-    <h2 style="margin:0">Quer um app assim?</h2>
-    <p>A Prumo cria agendamento online para barbearias e salões, com a sua marca e seus serviços.</p>
-    <div class="copy">
-      <span>WhatsApp:</span><code id="wa">(85) 98708-3063</code>
-      <button class="ghost" id="copy-wa" type="button">Copiar</button>
-      <span class="hint" id="copy-msg" style="margin:0"></span>
-    </div>
-    <p class="hint" style="margin:0">Instagram: @prumo.digita</p>
-  </section>
+  <footer class="credit">Produzido por <strong>Folgado Conecta</strong> · <a href="https://wa.me/5585987083063" target="_blank" rel="noopener">(85) 98708-3063</a></footer>
 </div>
 
 <div class="bar" id="bar">
@@ -220,26 +211,45 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
 (function () {
   /* Cole aqui o endereço do app web do Google Apps Script (termina em /exec).
      Vazio = modo demonstração, sem Google Agenda. */
-  var API_URL = "https://script.google.com/macros/s/AKfycbwSwoex6yVZFlDYZvGzZx6EBODP0TqxGpF7qAtX3lCKj3DHlx-uuwizErrGVA-rimU-/exec";
+  var API_URL = "";
   var CONNECTED = !!API_URL;
 
-  var SERVICES = [
-    { id: "corte", name: "Corte", sub: "Máquina e tesoura", min: 30, price: 40 },
-    { id: "barba", name: "Barba", sub: "Toalha quente e navalha", min: 30, price: 30 },
-    { id: "combo", name: "Corte + barba", sub: "O combo completo", min: 60, price: 65 },
-    { id: "sobrancelha", name: "Sobrancelha", sub: "Na navalha", min: 30, price: 15 }
-  ];
-  var BARBERS = [
-    { id: "rafa", name: "Rafa", sub: "Degradê e cortes clássicos" },
-    { id: "dani", name: "Dani", sub: "Barba e acabamento" },
-    { id: "leo", name: "Léo", sub: "Cortes modernos" }
-  ];
+  /* ===== DADOS DA BARBEARIA: edite só este bloco para cada cliente ===== */
+  var CLIENT = {
+    id: "rodrigues",
+    name: "Rodrigues Barbearia",
+    tagline: "Agende seu horário em 1 minuto",
+    monogram: "R",
+    logo: "logo.png",                     /* coloque o arquivo logo.png na mesma pasta; se não existir, aparece o "R" */
+    openMin: 9 * 60,                      /* grade começa às 09:00 */
+    slotCount: 21,                        /* blocos de 30 min: 09:00 até 19:00 (último início) */
+    closedNormal: [0, 6, 7, 8, 9, 10, 11, 12],  /* seg a sáb: abre 09:30, fecha 12:00 às 15:30 */
+    closedShort: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], /* domingo e feriado: 09:00 às 12:00 */
+    shortDays: [0],                       /* 0 = domingo */
+    holidays: ["2026-11-02", "2026-11-15", "2026-11-20", "2026-12-25", "2027-01-01"], /* feriados com horário curto (confirmar com o Rodrigues) */
+    noteNormal: "Fechado das 12:00 às 15:30.",
+    noteShort: "Domingo e feriado: aberto das 9:00 às 12:00.",
+    services: [
+      { id: "corte", name: "Corte", sub: "30 minutos", min: 30, price: 40 }
+    ],
+    barbers: [
+      { id: "rodrigues", name: "Rodrigues", sub: "Barbeiro" }
+    ]
+  };
+  /* ===== fim dos dados da barbearia ===== */
+
+  var SERVICES = CLIENT.services, BARBERS = CLIENT.barbers, OPEN_MIN = CLIENT.openMin, SLOT_COUNT = CLIENT.slotCount;
+  /* Dia curto (domingo e feriados) usa o horário reduzido; os outros usam o normal. */
+  function isShortDay(date) { return CLIENT.shortDays.indexOf(date.getDay()) !== -1 || CLIENT.holidays.indexOf(keyOf(date)) !== -1; }
+  function closedSet(date) {
+    var arr = isShortDay(date) ? CLIENT.closedShort : CLIENT.closedNormal, o = {};
+    arr.forEach(function (i) { o[i] = 1; });
+    return o;
+  }
   var FAKE = ["Marcos", "Tiago", "Bruno", "Felipe", "Davi", "Caio", "Renan", "Igor", "Paulo", "Vitor"];
   var DOW = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
   var DOWL = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
-  var SLOT_COUNT = 18; /* 09:00 até 17:30 */
-  var BREAKS = { 6: 1, 7: 1 }; /* 12:00 e 12:30 fechados */
-  var STORE = "prumo-barbearia-demo";
+  var STORE = "agenda:" + CLIENT.id;
 
   var state = { service: null, barber: null, date: null, start: null, bookings: [], view: "book", busy: {}, loading: false, loadErr: false };
 
@@ -247,7 +257,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function pad(n) { return n < 10 ? "0" + n : "" + n; }
   function keyOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
-  function slotLabel(i) { var m = 9 * 60 + i * 30; return pad(Math.floor(m / 60)) + ":" + pad(m % 60); }
+  function slotLabel(i) { var m = OPEN_MIN + i * 30; return pad(Math.floor(m / 60)) + ":" + pad(m % 60); }
   function money(v) { return "R$ " + v.toFixed(2).replace(".", ","); }
   function svc(id) { return SERVICES.filter(function (s) { return s.id === id; })[0]; }
   function brb(id) { return BARBERS.filter(function (b) { return b.id === id; })[0]; }
@@ -259,7 +269,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   function openDays() {
     var out = [], d = new Date();
     d.setHours(0, 0, 0, 0);
-    while (out.length < 7) { if (d.getDay() !== 0) out.push(new Date(d)); d.setDate(d.getDate() + 1); }
+    while (out.length < 7) { out.push(new Date(d)); d.setDate(d.getDate() + 1); }
     return out;
   }
   var DAYS = openDays();
@@ -273,7 +283,7 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   function isFinished(bk) {
     var s = svc(bk.service), p = String(bk.date).split("-");
     if (!s || p.length !== 3) return false;
-    var m = 9 * 60 + (bk.start + nSlots(s)) * 30;
+    var m = OPEN_MIN + (bk.start + nSlots(s)) * 30;
     return new Date(+p[0], +p[1] - 1, +p[2], Math.floor(m / 60), m % 60) <= new Date();
   }
   /* tira da lista o que já passou */
@@ -317,14 +327,14 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   function isPast(date, i) {
     var now = new Date();
     if (keyOf(now) !== keyOf(date)) return false;
-    var m = 9 * 60 + i * 30;
+    var m = OPEN_MIN + i * 30;
     return m <= now.getHours() * 60 + now.getMinutes();
   }
   function startOk(date, barberId, start, n) {
     if (start + n > SLOT_COUNT) return false;
     for (var j = 0; j < n; j++) {
       var i = start + j;
-      if (BREAKS[i] || isPast(date, i) || occupant(keyOf(date), barberId, i)) return false;
+      if (closedSet(date)[i] || isPast(date, i) || occupant(keyOf(date), barberId, i)) return false;
     }
     return true;
   }
@@ -376,14 +386,15 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
       return;
     }
     var date = dateByKey(state.date), n = nSlots(svc(state.service)), free = 0, html = "";
+    var closed = closedSet(date);
     for (var i = 0; i < SLOT_COUNT; i++) {
-      if (BREAKS[i]) continue;
+      if (closed[i]) continue;
       var ok = startOk(date, state.barber, i, n);
       if (ok) free++;
       html += '<button type="button" class="slot" data-i="' + i + '"' + (ok ? "" : " disabled") + ' aria-pressed="' + (state.start === i) + '">' + slotLabel(i) + "</button>";
     }
     box.innerHTML = html;
-    hint.textContent = free ? free + " horários livres em " + DOWL[date.getDay()] + ", " + date.getDate() + ". Almoço das 12:00 às 13:00." : "Sem horários livres nesse dia. Tente outro dia ou profissional.";
+    hint.textContent = free ? free + " horários livres em " + DOWL[date.getDay()] + ", " + date.getDate() + ". " + (isShortDay(date) ? CLIENT.noteShort : CLIENT.noteNormal) : "Sem horários livres nesse dia. Tente outro dia ou profissional.";
   }
 
   function renderBar() {
@@ -421,10 +432,10 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
   }
   function renderAgenda() {
     renderShopControls();
-    var bid = $("s-barber").value, dk = $("s-day").value, html = "", cleared = 0, booked = 0;
+    var bid = $("s-barber").value, dk = $("s-day").value, html = "", cleared = 0, booked = 0, closed = closedSet(dateByKey(dk));
     for (var i = 0; i < SLOT_COUNT; i++) {
       var t = slotLabel(i);
-      if (BREAKS[i]) { if (i === 6) html += '<div class="ag break"><span class="t">12:00</span><span class="who">Almoço</span></div>'; continue; }
+      if (closed[i]) { if (!closed[i - 1] || i === 0) html += '<div class="ag break"><span class="t">' + t + '</span><span class="who">Fechado</span></div>'; continue; }
       var o = occupant(dk, bid, i);
       if (!o) { html += '<div class="ag free"><span class="t">' + t + '</span><span class="who">Livre</span><span class="pill on">Disponível</span></div>'; }
       else if (o.kind === "seed") { booked++; html += '<div class="ag"><span class="t">' + t + '</span><span class="who">' + esc(o.name) + '</span><span class="pill">Ocupado</span></div>'; }
@@ -558,13 +569,17 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
     }).catch(function () { btn.disabled = false; msg.textContent = "Sem conexão com a agenda. Tente de novo."; });
   });
 
-  $("copy-wa").addEventListener("click", function () {
-    var txt = $("wa").textContent, msg = $("copy-msg");
-    function ok() { msg.textContent = "Copiado"; }
-    function fail() { var r = document.createRange(); r.selectNodeContents($("wa")); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); msg.textContent = "Número selecionado"; }
-    try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
-  });
-
+  document.title = CLIENT.name;
+  $("shop-name").textContent = CLIENT.name;
+  $("tagline").textContent = CLIENT.tagline;
+  var markEl = $("mark");
+  if (CLIENT.logo) {
+    markEl.className = "mark logo";
+    var im = new Image(); im.alt = CLIENT.name; im.src = CLIENT.logo;
+    im.onerror = function () { markEl.className = "mark"; markEl.textContent = CLIENT.monogram; };
+    markEl.appendChild(im);
+  } else { markEl.textContent = CLIENT.monogram; }
+  if (BARBERS.length === 1) { $("sec-barbers").hidden = true; }
   load();
   cleanup();
   state.date = keyOf(DAYS[0]);
@@ -573,6 +588,8 @@ input, select { background: var(--surface); border: 1px solid var(--line); borde
     $("tab-shop").hidden = true;
     $("cancel-code").hidden = false;
   }
+  if (BARBERS.length === 1) state.barber = BARBERS[0].id;
+  if (SERVICES.length === 1) state.service = SERVICES[0].id;
   renderServices(); renderBarbers(); renderDays(); renderSlots(); renderBar();
   fetchBusy();
   syncBookings();
