@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1a2e">
+<title>Agenda Barbearia Prumo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: one phone-width column (max 560px) with top tabs; booking flow stacked in sections, sticky confirm bar at bottom. Single dark navy + gold look, no light variant by choice. */
+:root {
+  color-scheme: dark;
+  --bg: #0b1a2e;
+  --surface: #12263f;
+  --surface-2: #17304e;
+  --line: #264765;
+  --fg: #eef2f7;
+  --muted: #a3b5c9;
+  --gold: #d4a84b;
+  --gold-ink: #1b1405;
+  --ok: #4cc38a;
+  --danger: #ef7b7b;
+  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 120px;
+}
+.wrap { max-width: 560px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.wrap > * { min-width: 0; }
+header { display: flex; align-items: center; gap: 12px; }
+.mark { width: 44px; height: 44px; flex: none; }
+.brand h1 { font-family: var(--font-display); font-weight: 700; font-size: 28px; letter-spacing: .04em; text-transform: uppercase; margin: 0; line-height: 1; }
+.brand p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.demo { margin-left: auto; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold); border-radius: 4px; padding: 3px 7px; white-space: nowrap; }
+nav { display: flex; gap: 4px; background: var(--surface); border-radius: 10px; padding: 4px; }
+nav button { flex: 1; min-width: 0; background: none; border: 0; color: var(--muted); font: 500 14px var(--font-body); padding: 10px 6px; border-radius: 7px; cursor: pointer; }
+nav button[aria-selected="true"] { background: var(--gold); color: var(--gold-ink); font-weight: 700; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: 20px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; color: var(--gold); }
+section { min-width: 0; }
+.list { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); color: var(--fg); border-radius: 10px; padding: 12px 14px; font: inherit; cursor: pointer; }
+.opt[aria-pressed="true"] { border-color: var(--gold); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--gold); }
+.opt .name { font-weight: 700; }
+.opt .sub { color: var(--muted); font-size: 13px; }
+.opt .grow { flex: 1; min-width: 0; }
+.opt .price { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--gold); font-variant-numeric: tabular-nums; }
+.avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--gold); flex: none; }
+.days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+.day { flex: none; width: 62px; text-align: center; background: var(--surface); border: 1px solid var(--line); color: var(--fg); border-radius: 10px; padding: 8px 0; font: inherit; cursor: pointer; }
+.day .dw { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.day .dn { font-family: var(--font-display); font-size: 26px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.day[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); }
+.day[aria-pressed="true"] .dw { color: var(--gold-ink); }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; margin-top: 10px; }
+.slot { background: var(--surface); border: 1px solid var(--line); color: var(--fg); border-radius: 8px; padding: 10px 0; font: 600 15px var(--font-body); font-variant-numeric: tabular-nums; cursor: pointer; }
+.slot[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); }
+.slot:disabled { color: #5d7590; background: transparent; border-style: dashed; text-decoration: line-through; cursor: not-allowed; }
+.hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+.fields { display: grid; gap: 10px; }
+label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+input, select { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--fg); font: 16px var(--font-body); padding: 11px 12px; width: 100%; min-width: 0; }
+.err { color: var(--danger); font-size: 13px; min-height: 18px; margin: 0; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 12px max(16px, env(safe-area-inset-left, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
+.bar-in { max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.bar-sum { flex: 1; min-width: 0; font-size: 13px; color: var(--muted); }
+.bar-sum strong { display: block; color: var(--fg); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cta { background: var(--gold); color: var(--gold-ink); border: 0; border-radius: 10px; font: 700 16px var(--font-body); padding: 13px 20px; cursor: pointer; white-space: nowrap; }
+.cta:disabled { opacity: .45; cursor: not-allowed; }
+.ghost { background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 8px; font: 500 13px var(--font-body); padding: 7px 10px; cursor: pointer; }
+.ghost.danger { color: var(--danger); border-color: #6b3a45; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: center; }
+.card .when { font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--gold); line-height: 1.05; min-width: 64px; font-variant-numeric: tabular-nums; }
+.card .grow { flex: 1; min-width: 0; }
+.confirm { background: var(--surface-2); border: 1px solid var(--gold); border-radius: 12px; padding: 14px; }
+.confirm strong { color: var(--gold); }
+.row { display: flex; gap: 8px; }
+.row > * { flex: 1; min-width: 0; }
+.agenda { display: flex; flex-direction: column; gap: 6px; }
+.ag { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); }
+.ag .t { font-family: var(--font-display); font-weight: 600; font-size: 20px; width: 56px; font-variant-numeric: tabular-nums; }
+.ag .who { flex: 1; min-width: 0; }
+.ag.free .who { color: var(--muted); }
+.ag.break { background: transparent; border-style: dashed; color: var(--muted); }
+.pill { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border-radius: 99px; padding: 3px 9px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.on { color: var(--ok); border-color: #2c6b52; }
+.pill.you { color: var(--gold); border-color: var(--gold); }
+.pitch { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.pitch p { margin: 0; }
+.copy { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.copy code { font: 700 16px var(--font-body); color: var(--gold); user-select: all; }
+@media (prefers-reduced-motion: no-preference) { .opt, .slot, .day { transition: background .15s, border-color .15s; } }
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
+      <circle cx="22" cy="22" r="21" fill="#12263f" stroke="#d4a84b" stroke-width="1.5"/>
+      <path d="M16 10h9a6 6 0 0 1 0 12h-4v6" fill="none" stroke="#d4a84b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M21 30l-3.4 5.2a3.8 3.8 0 1 0 6.8 0z" fill="#d4a84b"/>
+    </svg>
+    <div class="brand">
+      <h1>Barbearia Modelo</h1>
+      <p>Agende seu horário em 1 minuto</p>
+    </div>
+    <span class="demo" id="demo-badge">Demonstração</span>
+  </header>
+
+  <nav role="tablist" aria-label="Seções do app">
+    <button role="tab" id="tab-book" aria-selected="true" data-view="book">Agendar</button>
+    <button role="tab" id="tab-mine" aria-selected="false" data-view="mine">Meus horários</button>
+    <button role="tab" id="tab-shop" aria-selected="false" data-view="shop">Agenda do barbeiro</button>
+  </nav>
+
+  <!-- AGENDAR -->
+  <div id="view-book" class="wrap" style="gap:22px">
+    <section>
+      <h2>Serviço</h2>
+      <div class="list" id="services"></div>
+    </section>
+    <section>
+      <h2>Profissional</h2>
+      <div class="list" id="barbers"></div>
+    </section>
+    <section>
+      <h2>Dia e horário</h2>
+      <div class="days" id="days"></div>
+      <div class="slots" id="slots"></div>
+      <p class="hint" id="slot-hint">Escolha serviço e profissional para ver os horários livres.</p>
+    </section>
+    <section>
+      <h2>Seus dados</h2>
+      <div class="fields">
+        <label for="f-name">Nome
+          <input id="f-name" type="text" autocomplete="name" placeholder="Ex.: Carlos Souza">
+        </label>
+        <label for="f-phone">WhatsApp
+          <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(85) 99999-0000">
+        </label>
+        <p class="err" id="err" role="alert"></p>
+      </div>
+    </section>
+    <section id="done" hidden></section>
+  </div>
+
+  <!-- MEUS HORARIOS -->
+  <div id="view-mine" class="wrap" style="gap:12px" hidden>
+    <section>
+      <h2>Meus horários</h2>
+      <div class="list" id="mine-list"></div>
+    </section>
+    <section id="cancel-code" hidden>
+      <h2>Cancelar com código</h2>
+      <p class="hint" style="margin:0 0 10px">Marcou em outro aparelho? Digite o telefone e o código que apareceu na confirmação.</p>
+      <div class="fields">
+        <label for="c-phone">WhatsApp usado na marcação
+          <input id="c-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(85) 99999-0000">
+        </label>
+        <label for="c-code">Código
+          <input id="c-code" type="text" maxlength="4" autocapitalize="characters" autocomplete="off" placeholder="K7Q2">
+        </label>
+        <button class="ghost danger" id="c-go" type="button">Cancelar horário</button>
+        <p class="err" id="c-msg" role="alert"></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- AGENDA DO BARBEIRO -->
+  <div id="view-shop" class="wrap" style="gap:16px" hidden>
+    <section>
+      <h2>Agenda do dia</h2>
+      <div class="row">
+        <label for="s-barber">Profissional
+          <select id="s-barber"></select>
+        </label>
+        <label for="s-day">Dia
+          <select id="s-day"></select>
+        </label>
+      </div>
+    </section>
+    <section>
+      <div class="agenda" id="agenda"></div>
+      <p class="hint">Clientes em cinza são exemplos. Os horários que você agendar aparecem aqui com o selo "Você".</p>
+    </section>
+  </div>
+
+  <section class="pitch">
+    <h2 style="margin:0">Quer um app assim?</h2>
+    <p>A Prumo cria agendamento online para barbearias e salões, com a sua marca e seus serviços.</p>
+    <div class="copy">
+      <span>WhatsApp:</span><code id="wa">(85) 98708-3063</code>
+      <button class="ghost" id="copy-wa" type="button">Copiar</button>
+      <span class="hint" id="copy-msg" style="margin:0"></span>
+    </div>
+    <p class="hint" style="margin:0">Instagram: @prumo.digita</p>
+  </section>
+</div>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <div class="bar-sum"><strong id="sum-main">Nada selecionado</strong><span id="sum-sub">Escolha um serviço</span></div>
+    <button class="cta" id="confirm" type="button" disabled>Confirmar</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* Cole aqui o endereço do app web do Google Apps Script (termina em /exec).
+     Vazio = modo demonstração, sem Google Agenda. */
+  var API_URL = "https://script.google.com/macros/s/AKfycbwSwoex6yVZFlDYZvGzZx6EBODP0TqxGpF7qAtX3lCKj3DHlx-uuwizErrGVA-rimU-/exec";
+  var CONNECTED = !!API_URL;
+
+  var SERVICES = [
+    { id: "corte", name: "Corte", sub: "Máquina e tesoura", min: 30, price: 40 },
+    { id: "barba", name: "Barba", sub: "Toalha quente e navalha", min: 30, price: 30 },
+    { id: "combo", name: "Corte + barba", sub: "O combo completo", min: 60, price: 65 },
+    { id: "sobrancelha", name: "Sobrancelha", sub: "Na navalha", min: 30, price: 15 }
+  ];
+  var BARBERS = [
+    { id: "rafa", name: "Rafa", sub: "Degradê e cortes clássicos" },
+    { id: "dani", name: "Dani", sub: "Barba e acabamento" },
+    { id: "leo", name: "Léo", sub: "Cortes modernos" }
+  ];
+  var FAKE = ["Marcos", "Tiago", "Bruno", "Felipe", "Davi", "Caio", "Renan", "Igor", "Paulo", "Vitor"];
+  var DOW = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  var DOWL = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+  var SLOT_COUNT = 18; /* 09:00 até 17:30 */
+  var BREAKS = { 6: 1, 7: 1 }; /* 12:00 e 12:30 fechados */
+  var STORE = "prumo-barbearia-demo";
+
+  var state = { service: null, barber: null, date: null, start: null, bookings: [], view: "book", busy: {}, loading: false, loadErr: false };
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function keyOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function slotLabel(i) { var m = 9 * 60 + i * 30; return pad(Math.floor(m / 60)) + ":" + pad(m % 60); }
+  function money(v) { return "R$ " + v.toFixed(2).replace(".", ","); }
+  function svc(id) { return SERVICES.filter(function (s) { return s.id === id; })[0]; }
+  function brb(id) { return BARBERS.filter(function (b) { return b.id === id; })[0]; }
+  function nSlots(s) { return Math.ceil(s.min / 30); }
+  function hash(str) { var h = 0; for (var i = 0; i < str.length; i++) { h = (h * 31 + str.charCodeAt(i)) >>> 0; } return h; }
+  function seedBusy(dateKey, barberId, i) { return hash(dateKey + barberId + i) % 100 < 32; }
+  function seedName(dateKey, barberId, i) { return FAKE[hash(barberId + dateKey + i) % FAKE.length]; }
+
+  function openDays() {
+    var out = [], d = new Date();
+    d.setHours(0, 0, 0, 0);
+    while (out.length < 7) { if (d.getDay() !== 0) out.push(new Date(d)); d.setDate(d.getDate() + 1); }
+    return out;
+  }
+  var DAYS = openDays();
+
+  function load() {
+    try { var raw = localStorage.getItem(STORE); if (raw) state.bookings = JSON.parse(raw) || []; } catch (e) { state.bookings = []; }
+  }
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(state.bookings)); } catch (e) {} }
+
+  /* quem ocupa o slot i: null, {kind:"seed"|"you", ...} */
+  function occupant(dateKey, barberId, i) {
+    if (CONNECTED) {
+      var day = state.busy[dateKey];
+      if (day && day[barberId] && day[barberId].indexOf(i) !== -1) return { kind: "seed", name: "Ocupado" };
+      return null;
+    }
+    var b = state.bookings;
+    for (var k = 0; k < b.length; k++) {
+      if (b[k].date === dateKey && b[k].barber === barberId) {
+        var n = nSlots(svc(b[k].service));
+        if (i >= b[k].start && i < b[k].start + n) return { kind: "you", booking: b[k], first: i === b[k].start };
+      }
+    }
+    if (seedBusy(dateKey, barberId, i)) return { kind: "seed", name: seedName(dateKey, barberId, i) };
+    return null;
+  }
+  function isPast(date, i) {
+    var now = new Date();
+    if (keyOf(now) !== keyOf(date)) return false;
+    var m = 9 * 60 + i * 30;
+    return m <= now.getHours() * 60 + now.getMinutes();
+  }
+  function startOk(date, barberId, start, n) {
+    if (start + n > SLOT_COUNT) return false;
+    for (var j = 0; j < n; j++) {
+      var i = start + j;
+      if (BREAKS[i] || isPast(date, i) || occupant(keyOf(date), barberId, i)) return false;
+    }
+    return true;
+  }
+
+  function api(method, payload) {
+    if (method === "GET") return fetch(API_URL + "?" + payload).then(function (r) { return r.json(); });
+    return fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }).then(function (r) { return r.json(); });
+  }
+  function fetchBusy() {
+    if (!CONNECTED) return;
+    state.loading = true; state.loadErr = false; renderSlots();
+    api("GET", "action=range&from=" + keyOf(DAYS[0]) + "&to=" + keyOf(DAYS[DAYS.length - 1])).then(function (res) {
+      if (!res || !res.ok) throw new Error("bad");
+      state.busy = res.busy || {}; state.loading = false; state.loadErr = false;
+      if (state.start !== null && state.date && state.service && state.barber && !startOk(dateByKey(state.date), state.barber, state.start, nSlots(svc(state.service)))) state.start = null;
+      renderSlots(); renderBar();
+    }).catch(function () { state.loading = false; state.loadErr = true; renderSlots(); });
+  }
+
+  function renderServices() {
+    $("services").innerHTML = SERVICES.map(function (s) {
+      return '<button type="button" class="opt" data-id="' + s.id + '" aria-pressed="' + (state.service === s.id) + '">' +
+        '<span class="grow"><span class="name">' + esc(s.name) + '</span><br><span class="sub">' + esc(s.sub) + ' · ' + s.min + ' min</span></span>' +
+        '<span class="price">' + money(s.price) + '</span></button>';
+    }).join("");
+  }
+  function renderBarbers() {
+    $("barbers").innerHTML = BARBERS.map(function (b) {
+      return '<button type="button" class="opt" data-id="' + b.id + '" aria-pressed="' + (state.barber === b.id) + '">' +
+        '<span class="avatar">' + esc(b.name.charAt(0)) + '</span>' +
+        '<span class="grow"><span class="name">' + esc(b.name) + '</span><br><span class="sub">' + esc(b.sub) + '</span></span></button>';
+    }).join("");
+  }
+  function renderDays() {
+    $("days").innerHTML = DAYS.map(function (d) {
+      var k = keyOf(d);
+      return '<button type="button" class="day" data-k="' + k + '" aria-pressed="' + (state.date === k) + '"><div class="dw">' + DOW[d.getDay()] + '</div><div class="dn">' + d.getDate() + '</div></button>';
+    }).join("");
+  }
+  function dateByKey(k) { return DAYS.filter(function (d) { return keyOf(d) === k; })[0]; }
+
+  function renderSlots() {
+    var box = $("slots"), hint = $("slot-hint");
+    if (CONNECTED && state.loading) { box.innerHTML = ""; hint.textContent = "Carregando horários da agenda…"; return; }
+    if (CONNECTED && state.loadErr) { box.innerHTML = ""; hint.innerHTML = 'Não consegui carregar a agenda. <button class="ghost" type="button" id="retry">Tentar de novo</button>'; return; }
+    if (!state.service || !state.barber || !state.date) {
+      box.innerHTML = "";
+      hint.textContent = !state.service || !state.barber ? "Escolha serviço e profissional para ver os horários livres." : "Escolha um dia.";
+      return;
+    }
+    var date = dateByKey(state.date), n = nSlots(svc(state.service)), free = 0, html = "";
+    for (var i = 0; i < SLOT_COUNT; i++) {
+      if (BREAKS[i]) continue;
+      var ok = startOk(date, state.barber, i, n);
+      if (ok) free++;
+      html += '<button type="button" class="slot" data-i="' + i + '"' + (ok ? "" : " disabled") + ' aria-pressed="' + (state.start === i) + '">' + slotLabel(i) + "</button>";
+    }
+    box.innerHTML = html;
+    hint.textContent = free ? free + " horários livres em " + DOWL[date.getDay()] + ", " + date.getDate() + ". Almoço das 12:00 às 13:00." : "Sem horários livres nesse dia. Tente outro dia ou profissional.";
+  }
+
+  function renderBar() {
+    var s = state.service && svc(state.service), b = state.barber && brb(state.barber);
+    var main = $("sum-main"), sub = $("sum-sub");
+    if (!s) { main.textContent = "Nada selecionado"; sub.textContent = "Escolha um serviço"; }
+    else {
+      main.textContent = s.name + " · " + money(s.price);
+      var parts = [];
+      if (b) parts.push(b.name);
+      if (state.date && state.start !== null) { var d = dateByKey(state.date); parts.push(DOW[d.getDay()] + " " + d.getDate() + " às " + slotLabel(state.start)); }
+      sub.textContent = parts.length ? parts.join(" · ") : "Escolha o profissional";
+    }
+    $("confirm").disabled = !(s && b && state.date && state.start !== null);
+  }
+
+  function renderMine() {
+    var list = state.bookings.slice().sort(function (a, b) { return a.date === b.date ? a.start - b.start : (a.date < b.date ? -1 : 1); });
+    var box = $("mine-list");
+    if (!list.length) { box.innerHTML = '<p class="hint">Você ainda não tem horários marcados. Vá em Agendar e escolha o seu.</p>'; return; }
+    box.innerHTML = list.map(function (x) {
+      var d = dateByKey(x.date) || new Date(x.date + "T00:00:00"), s = svc(x.service), b = brb(x.barber);
+      return '<div class="card"><div class="when">' + slotLabel(x.start) + '<div class="hint" style="margin:0;font-family:var(--font-body);font-size:12px">' + DOW[d.getDay()] + " " + d.getDate() + '/' + pad(d.getMonth() + 1) + '</div></div>' +
+        '<div class="grow"><strong>' + esc(s.name) + '</strong><br><span class="sub" style="color:var(--muted)">com ' + esc(b.name) + ' · ' + money(s.price) + (x.code ? ' · código <strong style="color:var(--gold)">' + esc(x.code) + '</strong>' : '') + '</span></div>' +
+        '<button class="ghost danger" type="button" data-cancel="' + esc(x.id) + '">Cancelar</button></div>';
+    }).join("");
+  }
+
+  function renderShopControls() {
+    var sb = $("s-barber"), sd = $("s-day");
+    if (!sb.options.length) {
+      sb.innerHTML = BARBERS.map(function (b) { return '<option value="' + b.id + '">' + esc(b.name) + '</option>'; }).join("");
+      sd.innerHTML = DAYS.map(function (d) { return '<option value="' + keyOf(d) + '">' + DOW[d.getDay()] + " " + d.getDate() + '/' + pad(d.getMonth() + 1) + '</option>'; }).join("");
+    }
+  }
+  function renderAgenda() {
+    renderShopControls();
+    var bid = $("s-barber").value, dk = $("s-day").value, html = "", cleared = 0, booked = 0;
+    for (var i = 0; i < SLOT_COUNT; i++) {
+      var t = slotLabel(i);
+      if (BREAKS[i]) { if (i === 6) html += '<div class="ag break"><span class="t">12:00</span><span class="who">Almoço</span></div>'; continue; }
+      var o = occupant(dk, bid, i);
+      if (!o) { html += '<div class="ag free"><span class="t">' + t + '</span><span class="who">Livre</span><span class="pill on">Disponível</span></div>'; }
+      else if (o.kind === "seed") { booked++; html += '<div class="ag"><span class="t">' + t + '</span><span class="who">' + esc(o.name) + '</span><span class="pill">Ocupado</span></div>'; }
+      else {
+        booked++;
+        var s = svc(o.booking.service);
+        html += '<div class="ag"><span class="t">' + t + '</span><span class="who">' + esc(o.first ? o.booking.name + " · " + s.name : "(continua) " + o.booking.name) + '</span><span class="pill you">Você</span></div>';
+      }
+    }
+    $("agenda").innerHTML = html;
+  }
+
+  function setView(v) {
+    state.view = v;
+    ["book", "mine", "shop"].forEach(function (k) {
+      $("view-" + k).hidden = k !== v;
+      $("tab-" + k).setAttribute("aria-selected", k === v ? "true" : "false");
+    });
+    $("bar").hidden = v !== "book";
+    if (v === "mine") renderMine();
+    if (v === "shop") renderAgenda();
+  }
+
+  function resetStart() { state.start = null; }
+
+  $("services").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-id]"); if (!b) return;
+    state.service = b.getAttribute("data-id"); resetStart(); $("done").hidden = true;
+    renderServices(); renderSlots(); renderBar();
+  });
+  $("barbers").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-id]"); if (!b) return;
+    state.barber = b.getAttribute("data-id"); resetStart(); $("done").hidden = true;
+    renderBarbers(); renderSlots(); renderBar();
+  });
+  $("days").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-k]"); if (!b) return;
+    state.date = b.getAttribute("data-k"); resetStart(); $("done").hidden = true;
+    renderDays(); renderSlots(); renderBar();
+  });
+  $("slots").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-i]"); if (!b || b.disabled) return;
+    state.start = parseInt(b.getAttribute("data-i"), 10);
+    renderSlots(); renderBar();
+  });
+  document.querySelector("nav").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-view]"); if (b) setView(b.getAttribute("data-view"));
+  });
+  $("s-barber").addEventListener("change", renderAgenda);
+  $("s-day").addEventListener("change", renderAgenda);
+
+  function showDone(bk, name) {
+    var date = dateByKey(bk.date), s = svc(bk.service), b = brb(bk.barber), end = slotLabel(bk.start + nSlots(s));
+    var done = $("done");
+    done.hidden = false;
+    done.innerHTML = '<div class="confirm"><strong>Horário confirmado, ' + esc(name.split(" ")[0]) + '.</strong><br>' + esc(s.name) + ' com ' + esc(b.name) + ', ' + DOWL[date.getDay()] + ' ' + date.getDate() + '/' + pad(date.getMonth() + 1) + ' das ' + slotLabel(bk.start) + ' às ' + end + '. Total: ' + money(s.price) + '.' +
+      (bk.code ? '<p style="margin:10px 0 0">Seu código para cancelar: <strong style="font-size:22px;letter-spacing:.12em">' + esc(bk.code) + '</strong><br><span class="hint">Guarde esse código. Ele também fica em Meus horários neste aparelho.</span></p>' : '') +
+      '<div class="row" style="margin-top:10px"><button class="ghost" type="button" id="go-mine">Ver meus horários</button><button class="ghost" type="button" id="again">Agendar outro</button></div></div>';
+    done.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  $("confirm").addEventListener("click", function () {
+    var name = $("f-name").value.trim(), phone = $("f-phone").value.replace(/\D/g, ""), err = $("err");
+    err.textContent = "";
+    if (name.length < 2) { err.textContent = "Digite seu nome para confirmar."; $("f-name").focus(); return; }
+    if (phone.length < 10) { err.textContent = "Digite um WhatsApp com DDD, por exemplo (85) 99999-0000."; $("f-phone").focus(); return; }
+    var date = dateByKey(state.date), s = svc(state.service);
+    if (!startOk(date, state.barber, state.start, nSlots(s))) { err.textContent = "Esse horário acabou de ficar indisponível. Escolha outro."; resetStart(); renderSlots(); renderBar(); return; }
+    var bk = { id: "b" + Date.now(), service: state.service, barber: state.barber, date: state.date, start: state.start, name: name, phone: phone };
+
+    if (!CONNECTED) {
+      state.bookings.push(bk); save();
+      showDone(bk, name);
+      resetStart(); renderSlots(); renderBar();
+      return;
+    }
+
+    var btn = $("confirm");
+    btn.disabled = true; btn.textContent = "Confirmando…";
+    api("POST", { action: "book", service: bk.service, barber: bk.barber, date: bk.date, start: bk.start, name: name, phone: phone }).then(function (res) {
+      btn.textContent = "Confirmar";
+      if (!res || !res.ok) {
+        err.textContent = (res && res.error) || "Não foi possível agendar. Tente de novo.";
+        resetStart(); fetchBusy(); renderBar();
+        return;
+      }
+      bk.code = res.code;
+      state.bookings.push(bk); save();
+      showDone(bk, name);
+      resetStart(); fetchBusy(); renderBar();
+    }).catch(function () {
+      btn.textContent = "Confirmar";
+      err.textContent = "Sem conexão com a agenda. Confira a internet e tente de novo.";
+      renderBar();
+    });
+  });
+  $("done").addEventListener("click", function (e) {
+    if (e.target.id === "go-mine") setView("mine");
+    if (e.target.id === "again") { $("done").hidden = true; window.scrollTo({ top: 0, behavior: "smooth" }); }
+  });
+  $("slot-hint").addEventListener("click", function (e) { if (e.target.id === "retry") fetchBusy(); });
+
+  $("mine-list").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-cancel]"); if (!b) return;
+    if (b.getAttribute("data-armed") !== "1") { b.setAttribute("data-armed", "1"); b.textContent = "Tem certeza?"; return; }
+    var id = b.getAttribute("data-cancel");
+    var bk = state.bookings.filter(function (x) { return x.id === id; })[0];
+    function removeLocal() { state.bookings = state.bookings.filter(function (x) { return x.id !== id; }); save(); renderMine(); renderSlots(); }
+    if (!CONNECTED || !bk || !bk.code) { removeLocal(); return; }
+    b.disabled = true; b.textContent = "Cancelando…";
+    api("POST", { action: "cancel", phone: bk.phone, code: bk.code }).then(function (res) {
+      if (res && res.ok) { removeLocal(); fetchBusy(); }
+      else if (res && /encontramos/.test(res.error || "")) { removeLocal(); fetchBusy(); } /* já não existe na agenda */
+      else { b.disabled = false; b.textContent = "Tentar de novo"; b.removeAttribute("data-armed"); }
+    }).catch(function () { b.disabled = false; b.textContent = "Tentar de novo"; b.removeAttribute("data-armed"); });
+  });
+
+  $("c-go").addEventListener("click", function () {
+    var msg = $("c-msg"), phone = $("c-phone").value.replace(/\D/g, ""), code = $("c-code").value.trim().toUpperCase();
+    msg.style.color = "var(--danger)"; msg.textContent = "";
+    if (phone.length < 10) { msg.textContent = "Digite o WhatsApp com DDD."; return; }
+    if (code.length !== 4) { msg.textContent = "O código tem 4 caracteres."; return; }
+    var btn = $("c-go"); btn.disabled = true;
+    api("POST", { action: "cancel", phone: phone, code: code }).then(function (res) {
+      btn.disabled = false;
+      if (res && res.ok) {
+        state.bookings = state.bookings.filter(function (x) { return !(x.code === code && x.phone === phone); }); save();
+        msg.style.color = "var(--ok)"; msg.textContent = "Horário cancelado.";
+        $("c-code").value = ""; renderMine(); fetchBusy();
+      } else { msg.textContent = (res && res.error) || "Não foi possível cancelar."; }
+    }).catch(function () { btn.disabled = false; msg.textContent = "Sem conexão com a agenda. Tente de novo."; });
+  });
+
+  $("copy-wa").addEventListener("click", function () {
+    var txt = $("wa").textContent, msg = $("copy-msg");
+    function ok() { msg.textContent = "Copiado"; }
+    function fail() { var r = document.createRange(); r.selectNodeContents($("wa")); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); msg.textContent = "Número selecionado"; }
+    try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
+  });
+
+  load();
+  state.date = keyOf(DAYS[0]);
+  if (CONNECTED) {
+    $("demo-badge").hidden = true;
+    $("tab-shop").hidden = true;
+    $("cancel-code").hidden = false;
+  }
+  renderServices(); renderBarbers(); renderDays(); renderSlots(); renderBar();
+  fetchBusy();
+})();
+</script>
+</body>
+</html>
